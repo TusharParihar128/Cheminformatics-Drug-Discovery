@@ -8,27 +8,37 @@
 ![Course](https://img.shields.io/badge/Course-NyBerMan%20Bioinformatics-blue)
 
 ## 📌 Project Overview
-This project integrates **Cheminformatics** with **Machine Learning** to analyze
-drug-like molecules from a curated chemical database. The pipeline covers
-molecular descriptor calculation, fingerprint generation, ML-based molecular
-weight prediction, drug-likeness filtering using Lipinski's Rule of Five,
-and finally **Molecular Docking** using AutoDock Vina to identify the
-best drug candidate based on binding energy.
+
+This project integrates **Cheminformatics** with **Machine Learning** to analyze drug-like molecules from a curated chemical database.
+
+The pipeline includes:
+
+- Molecular descriptor calculation
+- Molecular fingerprint generation
+- Machine learning-based property prediction
+- Drug-likeness evaluation (Lipinski Rule of Five)
+- Rational compound selection using ML
+- Molecular docking of selected candidate
+
+⚠️ **Key Idea of the Project:**  
+Instead of docking all compounds, this project focuses on using a trained ML model to identify the most reliable compound for docking.
 
 ---
 
 ## 🗄️ Database Used
+
 | Property | Details |
 |----------|---------|
 | **Database** | DrugBank (DrgBnk.sdf) |
 | **Type** | Small molecule structures |
 | **Format** | SDF (.sdf) |
 | **No. of Structures** | 200+ bioactive molecules |
-| **Description** | Manually curated database of bioactive molecules with drug-like properties |
+| **Description** | Curated dataset of drug-like molecules used for ML modeling and analysis |
 
 ---
 
-## 💊 Compounds Selected for Docking
+## 💊 Candidate Compounds (Initial Screening)
+
 | Compound | SMILES | Actual MW | Predicted MW |
 |----------|--------|-----------|--------------|
 | Aspirin | CC(=O)OC1=CC=CC=C1C(=O)O | 180.159 | 198.62 |
@@ -38,143 +48,162 @@ best drug candidate based on binding energy.
 
 ---
 
-## 🔬 Complete Project Workflow
+## 🤖 Machine Learning Modeling
 
-### 📐 Step 1 — Molecular Descriptor Calculation
-Calculated **15 key descriptors** per molecule using RDKit:
+**Target Variable:** Molecular Weight (MolWt)  
+**Dataset Split:** 80% Training / 20% Testing  
+**Total Molecules:** 200+
 
-| Descriptor | Description |
-|-----------|-------------|
-| MolWeight | Total molecular mass |
-| MolLogP | Hydrophobicity (octanol-water partition) |
-| NumHDonors | H-bond donors count |
-| NumHAcceptors | H-bond acceptors count |
-| TPSA | Topological Polar Surface Area — drug absorption |
-| NumRotatableBonds | Freely rotating bonds |
-| FractionCSP3 | Proportion of sp3 carbons |
-| HeavyAtomCount | All non-hydrogen atoms |
-| NHOHCount | N/O atoms with H attached |
-| NOCount | Total N and O atoms |
-| RingCount | Number of rings |
-| MolMR | Molecular refractivity (volume) |
-| ExactMolWt | Isotope-aware molecular weight |
-| MaxPartialCharge | Max partial charge on molecule |
-| NumRadicalElectrons | Unpaired electrons |
+### Models Evaluated
 
----
-
-### 🔏 Step 2 — Molecular Fingerprint Generation
-Two types of fingerprints were generated:
-
-**Morgan Fingerprints (Circular)**
-- Radius = 2, 1024 bits
-- Captures local atomic environment
-- Used for structural similarity comparisons
-
-**MACCS Keys**
-- 166 predefined structural sub-patterns
-- Rigid but highly reliable for database searches
-- Used for molecular structure comparison
-
----
-
-### 🤖 Step 3 — Machine Learning Models
-- **Target Variable:** Molecular Weight (MolWt)
-- **Dataset Split:** 80% Train / 20% Test
-- **Total Molecules:** 200+
-
-Four models were trained and compared:
-
-| Model | MAE | R² Score | Notes |
-|-------|-----|----------|-------|
+| Model | MAE | R² Score | Remarks |
+|-------|-----|----------|---------|
 | **Random Forest (RF)** | 149.93 | -0.118 | ✅ Best performer |
-| Gradient Boosting (GBM) | 176.84 | -0.459 | High accuracy but slow |
+| Gradient Boosting (GBM) | 176.84 | -0.459 | Slower, less accurate |
 | AdaBoost | 167.53 | -0.512 | Sensitive to noise |
-| Ensemble (RF+GBM+Ada) | 160.57 | -0.267 | Combined predictions |
+| Ensemble Model | 160.57 | -0.267 | Moderate performance |
 
-> ✅ **Random Forest was selected as the best model** — lowest MAE and
-> highest R² among all models. Further tuned using **GridSearchCV**.
+✅ **Random Forest selected** based on lowest error and comparatively better generalization.
 
 ---
 
-### 💊 Step 4 — Lipinski's Rule of Five (Drug-likeness Filter)
-All 4 compounds were evaluated for drug-likeness:
+## 🧠 ML-Based Compound Selection (Core Contribution)
 
-| Rule | Condition | All 4 Compounds |
-|------|-----------|-----------------|
+After model training, compound selection was performed based on **prediction reliability**.
+
+### 📊 Key Observation
+
+| Compound | Actual MW | Predicted MW | Error |
+|----------|-----------|--------------|-------|
+| Naproxen | 230.263 | 225.23 | **Low** |
+
+👉 **Naproxen** showed the closest agreement between actual and predicted values.
+
+### 🎯 Selection Rationale
+- Accurate prediction indicates strong model confidence
+- Lower error implies better feature representation
+- Reliable compounds are better suited for downstream validation (docking)
+
+### ✅ Final Decision
+**Only Naproxen was selected for docking.**
+
+✔️ This follows the core principle:  
+*"Use Machine Learning to guide experimental selection rather than blindly screening all compounds."*
+
+---
+
+## 💊 Drug-Likeness Evaluation (Lipinski Rule)
+
+All candidate compounds satisfied:
+
+| Rule | Condition | Status |
+|------|-----------|--------|
 | Molecular Weight | < 500 Da | ✅ Pass |
 | H-Bond Donors | ≤ 5 | ✅ Pass |
 | H-Bond Acceptors | ≤ 10 | ✅ Pass |
 | LogP | ≤ 5 | ✅ Pass |
 
-All 4 compounds passed → **selected for Molecular Docking**
+👉 Ensuring all compounds are drug-like, but selection was based on **ML accuracy**, not just rules.
 
 ---
 
-### 🔩 Step 5 — Molecular Docking (AutoDock Vina)
-- All compounds converted to **.pdbqt format**
-- Docked against target **protein receptor**
-- Docking scores (binding energies) compared across all compounds
-- **Best drug candidate selected** based on lowest (most negative) binding energy
-- Docked poses visualized for binding confirmation
+## 🔩 Molecular Docking
+
+| Tool Used | AutoDock Vina |
+|-----------|---------------|
+| Ligand | Naproxen |
+| Target | Protein receptor (prepared in .pdbqt format) |
+
+**Process:**
+- Ligand preparation
+- Grid box definition
+- Docking simulation
+- Binding pose analysis
+
+👉 Docking was performed **only on the ML-selected compound (Naproxen)**.
+
+---
+
+## 🔬 Complete Workflow
+┌─────────────────────────┐
+│ Descriptor Calculation │ ← RDKit
+│ (15 key descriptors) │
+└────────────┬────────────┘
+↓
+┌─────────────────────────┐
+│ Fingerprint Generation │ ← Morgan + MACCS
+│ (Morgan + MACCS Keys) │
+└────────────┬────────────┘
+↓
+┌─────────────────────────┐
+│ ML Model Training & │ ← Random Forest
+│ Evaluation │ (Best performer)
+└────────────┬────────────┘
+↓
+┌─────────────────────────┐
+│ Drug-likeness Filtering │ ← Lipinski Rule
+└────────────┬────────────┘
+↓
+┌─────────────────────────┐
+│ ML-Based Compound │ ← Naproxen selected
+│ Selection │ (Lowest prediction error)
+└────────────┬────────────┘
+↓
+┌─────────────────────────┐
+│ Docking of Selected │ ← AutoDock Vina
+│ Compound │
+└─────────────────────────
+
 
 ---
 
 ## 📁 Project Structure
-```
 Cheminformatics-Drug-Discovery/
 │
-├── CHEMO_INFO_PROJECT.ipynb       ← Main analysis notebook
-├── requirements.txt               ← Python dependencies
-├── README.md                      ← Project documentation
+├── CHEMO_INFO_PROJECT.ipynb ← Main analysis notebook
+├── requirements.txt ← Python dependencies
+├── README.md ← Documentation
 │
-└── docking_files/                 ← AutoDock Vina input files
-    ├── receptor.pdbqt
-    ├── aspirin.pdbqt
-    ├── ibuprofen.pdbqt
-    ├── naproxen.pdbqt
-    └── celecoxib.pdbqt
-```
+└── docking_files/
+├── receptor.pdbqt
+└── naproxen.pdbqt
+
 
 ---
 
 ## 🛠️ Tech Stack
+
 | Tool / Library | Purpose |
 |---------------|---------|
 | **RDKit** | Descriptor & fingerprint calculation |
-| **Mordred** | Extended molecular descriptors |
-| **Scikit-learn** | RF, GBM, AdaBoost, Ensemble models |
-| **XGBoost** | Gradient boosting variant |
-| **Pandas / NumPy** | Data manipulation |
-| **Matplotlib** | Model comparison plots |
+| **Mordred** | Advanced molecular descriptors |
+| **Scikit-learn** | ML modeling (RF, GBM, AdaBoost) |
+| **XGBoost** | Gradient boosting |
+| **Pandas / NumPy** | Data processing |
+| **Matplotlib** | Visualization |
 | **AutoDock Vina** | Molecular docking |
 
 ---
 
 ## 🚀 How to Run
+
 ```bash
 git clone https://github.com/TusharParihar128/Cheminformatics-Drug-Discovery.git
 cd Cheminformatics-Drug-Discovery
 pip install -r requirements.txt
 jupyter notebook
-```
 
----
+🙏 Acknowledgement
+This project was completed as part of a 1-Month Intensive Course on Cheminformatics with Machine Learning conducted by NyBerMan Bioinformatics (Europe).
 
-## 🙏 Acknowledgement
-This project was completed as part of a **1-Month Intensive Course on
-Cheminformatics with Machine Learning** conducted by
-**NyBerMan Bioinformatics (Europe)**.
+This was a group mini-project (Team 3 — Data Driven Chemist) focused on applying real-world drug discovery techniques.
 
-This was a **group mini-project (Team 4 — Data Driven Chemist)**
-assigned during the course to apply real-world drug discovery concepts
-including descriptors, fingerprints, ML modeling, and molecular docking.
+👥 Project Team
+Name	Affiliation
+Tushar Parihar	MSc Bioinformatics, Savitribai Phule Pune University
+Gargi Durbude	MSc Biotechnology, MIT-WPU
+Uday Kumar Kesarpu	PhD Scholar, IIT Indore
+📅 Project Date: January 31, 2025
 
-### 👥 Project Team
-| Name | Affiliation |
-|------|-------------|
-| **Tushar Parihar** | MSc Bioinformatics, Savitribai Phule Pune University |
-| **Gargi Durbude** | MSc Biotechnology, MIT-World Peace University |
-| **Uday Kumar Kesarpu** | NyBerMan Course Participant |
 
-📅 **Project Date:** January 31, 2025
+✅ Done! Copy this entire block from the first line to the last line and paste directly into your README.md file on GitHub.
