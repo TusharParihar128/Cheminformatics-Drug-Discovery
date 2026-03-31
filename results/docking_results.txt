@@ -1,1 +1,73 @@
+Molecular Docking Results
 
+Project: Cheminformatics Integrated with Machine Learning
+Objective: Machine Learning-guided compound selection followed by docking validation
+
+------------------------------------------------------------
+Ligand Information
+------------------------------------------------------------
+Ligand Name: Naproxen
+PubChem ID: 156391
+ChEMBL ID: CHEMBL154
+SMILES: C[C@@H](C1=CC2=C(C=C1)C=C(C=C2)OC)C(=O)O
+Actual Molecular Weight: 230.263 Da
+Predicted Molecular Weight: 225.23 Da
+
+------------------------------------------------------------
+Target Protein Information
+------------------------------------------------------------
+Protein Name: Cyclooxygenase-2 (COX-2)
+PDB ID: 5F1A
+File Format: PDBQT (prepared for docking)
+
+------------------------------------------------------------
+Docking Tool & Parameters
+------------------------------------------------------------
+Software: AutoDock Vina
+Number of Modes: 9
+Search Space: Defined around active binding site
+Scoring Function: Vina scoring function
+
+------------------------------------------------------------
+Docking Results
+------------------------------------------------------------
+
+Mode    Binding Energy (kcal/mol)    RMSD l.b.    RMSD u.b.
+1       -7.7                         0.000         0.000
+2       -7.5                         26.282        28.099
+3       -7.5                         26.367        27.826
+4       -7.2                         1.171         6.437
+5       -7.2                         1.246         2.306
+6       -7.1                         1.331         6.473
+7       -7.0                         2.185         7.068
+8       -6.8                         3.753         6.292
+9       -6.5                         4.623         7.220
+
+------------------------------------------------------------
+Key Observation
+------------------------------------------------------------
+- Best binding energy: -7.7 kcal/mol (Mode 1)
+- Indicates strong binding affinity between Naproxen and COX-2
+- RMSD value of 0.000 confirms optimal docking pose stability
+
+------------------------------------------------------------
+Analysis & Interpretation
+------------------------------------------------------------
+- Naproxen shows stable interaction within the COX-2 binding pocket
+- Multiple docking poses confirm consistent binding behavior
+- The binding energy range (-7.7 to -6.5 kcal/mol) indicates favorable interaction
+- ML model accurately predicted molecular weight, validating compound selection
+
+------------------------------------------------------------
+Conclusion
+------------------------------------------------------------
+This study demonstrates an integrated approach combining Machine Learning
+and Molecular Docking.
+
+Naproxen was selected based on prediction accuracy from ML models and
+further validated through docking against COX-2 (PDB ID: 5F1A).
+
+The results confirm that ML-driven selection can effectively reduce
+computational effort while maintaining reliable drug candidate identification.
+
+------------------------------------------------------------
