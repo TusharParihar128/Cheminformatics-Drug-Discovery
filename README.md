@@ -11,10 +11,11 @@
 This project integrates **Cheminformatics** with **Machine Learning** to analyze
 drug-like molecules from a curated chemical database. The pipeline covers
 molecular descriptor calculation, fingerprint generation, ML-based molecular
-weight prediction, drug-likeness filtering using Lipinski's Rule of Five,
-and finally **Molecular Docking** using AutoDock Vina to identify the
-best drug candidate based on binding energy.
+weight prediction, and drug-likeness filtering using Lipinski's Rule of Five.
 
+Instead of docking all compounds, a **Machine Learning-driven selection strategy**
+was used to identify the most reliable compound, which was then taken forward for
+**Molecular Docking using AutoDock Vina**.
 ---
 
 ## 🗄️ Database Used
@@ -28,7 +29,7 @@ best drug candidate based on binding energy.
 
 ---
 
-## 💊 Compounds Selected for Docking
+## 💊 Candidate Compounds (Initial Screening)
 | Compound | SMILES | Actual MW | Predicted MW |
 |----------|--------|-----------|--------------|
 | Aspirin | CC(=O)OC1=CC=CC=C1C(=O)O | 180.159 | 198.62 |
@@ -37,6 +38,33 @@ best drug candidate based on binding energy.
 | Celecoxib | CC1=CC=C(C=C1)C2=CC(=NN2...)C(F)(F)F | 381.379 | 330.65 |
 
 ---
+👉 These compounds were initially evaluated, but **not all were docked**.
+
+Selection for docking was based on **ML prediction accuracy**, not random choice.
+
+## 🧠 ML-Based Compound Selection (Core Idea)
+
+After training the machine learning model, compounds were evaluated based on
+how accurately their molecular weight was predicted.
+
+| Compound | Actual MW | Predicted MW | Error |
+|----------|----------|--------------|-------|
+| Naproxen | 230.263  | 225.23       | Low |
+
+👉 **Naproxen showed the closest match between actual and predicted values**
+
+### 🎯 Why Naproxen was selected?
+
+- Indicates high model confidence  
+- Shows better feature representation  
+- Minimizes prediction error  
+- Suitable for reliable downstream analysis  
+
+### ✅ Final Decision
+👉 Only **Naproxen** was selected for docking  
+
+✔️ This follows the main objective:
+> Using Machine Learning to decide *which compound should be taken forward*, instead of docking all compounds.
 
 ## 🔬 Complete Project Workflow
 
@@ -107,16 +135,20 @@ All 4 compounds were evaluated for drug-likeness:
 | H-Bond Acceptors | ≤ 10 | ✅ Pass |
 | LogP | ≤ 5 | ✅ Pass |
 
-All 4 compounds passed → **selected for Molecular Docking**
+All 4 compounds passed drug-likeness criteria → considered suitable candidates.
+
+👉 However, final selection for docking was based on **ML prediction accuracy**, not just Lipinski rules.
 
 ---
 
 ### 🔩 Step 5 — Molecular Docking (AutoDock Vina)
-- All compounds converted to **.pdbqt format**
-- Docked against target **protein receptor**
-- Docking scores (binding energies) compared across all compounds
-- **Best drug candidate selected** based on lowest (most negative) binding energy
-- Docked poses visualized for binding confirmation
+
+- Only **Naproxen** was selected for docking based on ML prediction accuracy  
+- Ligand converted to **.pdbqt format**  
+- Docked against target **protein receptor**  
+- Binding pose and interactions analyzed  
+
+👉 Docking was performed **only on the ML-selected compound**, not on all compounds
 
 ---
 
@@ -128,12 +160,9 @@ Cheminformatics-Drug-Discovery/
 ├── requirements.txt               ← Python dependencies
 ├── README.md                      ← Project documentation
 │
-└── docking_files/                 ← AutoDock Vina input files
+└── docking_files/
     ├── receptor.pdbqt
-    ├── aspirin.pdbqt
-    ├── ibuprofen.pdbqt
-    ├── naproxen.pdbqt
-    └── celecoxib.pdbqt
+    └── naproxen.pdbqt
 ```
 
 ---
