@@ -50,8 +50,20 @@ jupyter notebook
 ---
 
 ## 🎓 Acknowledgement
-This project was completed as part of my learning in
-Computational Drug Discovery and Cheminformatics.
+
+This project was completed as part of a **1-Month Intensive Course on
+Cheminformatics with Machine Learning** conducted by **Nyberman**.
+
+This was a **group mini-project** assigned during the course to apply
+cheminformatics concepts including molecular descriptors, fingerprints,
+Lipinski's Rule of Five, and molecular docking.
+
+### 👥 Project Team
+| Name |
+|------|
+| Tushar Parihar |
+| Gargi Durbude |
+| Uday Kumar |
 
 ---
 
