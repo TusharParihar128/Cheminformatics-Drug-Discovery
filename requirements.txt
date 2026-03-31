@@ -1,1 +1,7 @@
-
+rdkit
+pandas
+numpy
+mordred
+scikit-learn
+matplotlib
+seaborn
