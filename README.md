@@ -195,7 +195,7 @@ This project was completed as part of a **1-Month Intensive Course on
 Cheminformatics with Machine Learning** conducted by
 **NyBerMan Bioinformatics (Europe)**.
 
-This was a **group mini-project (Team 4 — Data Driven Chemist)**
+This was a **group mini-project (Team 3 — Data Driven Chemist)**
 assigned during the course to apply real-world drug discovery concepts
 including descriptors, fingerprints, ML modeling, and molecular docking.
 
