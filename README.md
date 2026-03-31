@@ -175,6 +175,6 @@ including descriptors, fingerprints, ML modeling, and molecular docking.
 |------|-------------|
 | **Tushar Parihar** | MSc Bioinformatics, Savitribai Phule Pune University |
 | **Gargi Durbude** | MSc Biotechnology, MIT-World Peace University |
-| **Uday Kumar Kesarpu** | NyBerMan Course Participant |
+| **Uday Kumar Kesarpu** | PhD Scholar, IIT Indore |
 
 📅 **Project Date:** January 31, 2025
